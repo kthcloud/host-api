@@ -59,7 +59,7 @@ function getGpuSensorValue(sensorValues) {
 
 function getGpuSensorField(gpuSensor) {
   for (let [sensorLocation, sensorValues] of Object.entries(gpuSensor)) {
-    if (sensorLocation.includes('loc')) {
+    if (sensorLocation.includes('loc') || sensorLocation.includes('Composite') || sensorLocation.includes('temp1')) {
       return getGpuSensorValue(sensorValues)
     }
   }
