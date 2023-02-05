@@ -6,13 +6,22 @@ const execProm = util.promisify(child.exec)
 async function getSensorData() {
     return execProm('sensors -j')
         .then(({ stdout }) => JSON.parse(stdout))
-   
-        // Use when testing on windows...
+
         .catch(_err => {
-            return localSensorsData
+            return {}
         })
 }
 
+async function getLspciData() {
+    return execProm('lspci -mmv -nnv | jc --lspci')
+        .then(({ stdout }) => JSON.parse(stdout))
+
+        .catch(_err => {
+            return []
+        })
+}
+
+// Use when testing on windows...
 const localSensorsData = {
     "i350bb-pci-1704": {
         "Adapter": "PCI adapter",
@@ -138,4 +147,4 @@ const localSensorsData = {
 }
 
 
-export { getSensorData }
+export { getSensorData, getLspciData }
