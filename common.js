@@ -7,7 +7,8 @@ async function getSensorData() {
   return execProm("sensors -j")
     .then(({ stdout }) => JSON.parse(stdout))
 
-    .catch((_err) => {
+    .catch((err) => {
+      console.log(err);
       return {};
     });
 }
@@ -16,7 +17,8 @@ async function getLspciData() {
   return execProm("lspci -mmv -nnv | jc --lspci")
     .then(({ stdout }) => JSON.parse(stdout))
 
-    .catch((_err) => {
+    .catch((err) => {
+      console.log(err);
       return [];
     });
 }

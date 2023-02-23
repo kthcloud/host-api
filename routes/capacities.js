@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getLspciData } from "../common.js";
+import { getLspciData, NVIDIA_VENDOR_ID } from "../common.js";
 
 const routes = express.Router();
 
