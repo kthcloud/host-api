@@ -1,10 +1,8 @@
 import express from 'express'
 
-import { getLspciData } from '../common.js'
+import { getLspciData, NVIDIA_VENDOR_ID} from '../common.js'
 
 const routes = express.Router()
-
-const NVIDIA_VENDOR_ID = "10de"
 
 async function getGpuInfo() {
     return getLspciData()
