@@ -1,6 +1,7 @@
 import express from "express";
+import * as si from "systeminformation";
 
-import { getLspciData, NVIDIA_VENDOR_ID } from "../common.js";
+import { getLspciData, NVIDIA_VENDOR_ID, convertToGb } from "../common.js";
 
 const routes = express.Router();
 
@@ -26,16 +27,26 @@ async function getGpuCount() {
         });
 }
 
+async function getRam() {
+    return si.mem().then((rawResult) => {
+        return {
+            total: convertToGb(rawResult.total),
+        };
+    });
+}
+
 routes.get("/capacities", async (_req, res) => {
     // Make all capacity request
     let capacities = {
         gpu: {
             count: getGpuCount(),
         },
+        ram: getRam(),
     };
 
     // Await all requests
     capacities.gpu.count = await capacities.gpu.count;
+    capacities.ram = await capacities.ram;
 
     res.status(200).json(capacities);
 });
