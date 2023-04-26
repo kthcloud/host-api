@@ -22,8 +22,9 @@ async function getGpuInfo() {
                     }
 
                     result.push({
-                        gpuName: gpuName,
+                        name: gpuName,
                         slot: deviceObject.slot,
+                        bus: deviceObject.bus,
                         vendor: deviceObject.vendor,
                         vendorId: deviceObject.vendor_id,
                         deviceId: deviceObject.device_id,

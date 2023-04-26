@@ -7,9 +7,9 @@ const routes = express.Router();
 async function getCpuTemp() {
   return si.cpuTemperature().then((rawResult) => {
     return {
-      main: rawResult.main,
-      cores: rawResult.cores,
-      max: rawResult.max,
+      main: rawResult.main ? rawResult.main : 0,
+      cores: rawResult.cores ? rawResult.cores : 0,
+      max: rawResult.max ? rawResult.max : 0,
     };
   });
 }
@@ -41,11 +41,11 @@ async function getNetworkUsage() {
       rxSec:
         rawResult[0].rx_sec == null
           ? 0
-          : Math.round(rawResult[0].rx_sec ),
+          : Math.round(rawResult[0].rx_sec),
       txSec:
         rawResult[0].tx_sec == null
           ? 0
-          : Math.round(rawResult[0].tx_sec ),
+          : Math.round(rawResult[0].tx_sec),
     };
   });
 }
