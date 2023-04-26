@@ -38,14 +38,14 @@ async function getNetworkUsage() {
   return si.networkStats().then((rawResult) => {
     const seconds = rawResult[0].ms / 1000.0;
     return {
-      receiveRate:
+      rxSec:
         rawResult[0].rx_sec == null
           ? 0
-          : Math.round(rawResult[0].rx_sec / seconds),
-      transmitRate:
+          : Math.round(rawResult[0].rx_sec ),
+      txSec:
         rawResult[0].tx_sec == null
           ? 0
-          : Math.round(rawResult[0].tx_sec / seconds),
+          : Math.round(rawResult[0].tx_sec ),
     };
   });
 }

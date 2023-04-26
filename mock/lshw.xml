@@ -1,0 +1,97 @@
+<?xml version="1.0" standalone="yes" ?>
+<list>
+  <node id="display" claimed="true" class="display" handle="PCI:0000:03:00.0" modalias="pci:v0000102Bd00000536sv00001028sd00000718bc03sc00i00">
+   <description>VGA compatible controller</description>
+   <product>Integrated Matrox G200eW3 Graphics Controller</product>
+   <vendor>Matrox Electronics Systems Ltd.</vendor>
+   <physid>0</physid>
+   <subproduct>Dell</subproduct>
+   <subvendor>Dell</subvendor>
+   <businfo>pci@0000:03:00.0</businfo>
+   <logicalname>/dev/fb0</logicalname>
+   <version>04</version>
+   <width units="bits">32</width>
+   <clock units="Hz">66000000</clock>
+   <configuration>
+    <setting id="depth" value="32" />
+    <setting id="driver" value="mgag200" />
+    <setting id="latency" value="64" />
+    <setting id="maxlatency" value="32" />
+    <setting id="mingnt" value="16" />
+    <setting id="resolution" value="1024,768" />
+   </configuration>
+   <capabilities>
+    <capability id="pm" >Power Management</capability>
+    <capability id="vga_controller" />
+    <capability id="bus_master" >bus mastering</capability>
+    <capability id="cap_list" >PCI capabilities listing</capability>
+    <capability id="rom" >extension ROM</capability>
+    <capability id="fb" >framebuffer</capability>
+   </capabilities>
+   <resources>
+    <resource type="irq" value="16" />
+    <resource type="memory" value="91000000-91ffffff" />
+    <resource type="memory" value="92808000-9280bfff" />
+    <resource type="memory" value="92000000-927fffff" />
+    <resource type="memory" value="c0000-dffff" />
+   </resources>
+   <hints>
+    <hint name="icon" value="display" />
+    <hint name="pci.class" value="0x300" />
+    <hint name="pci.device" value="0x536" />
+    <hint name="pci.subdevice" value="0x718" />
+    <hint name="pci.subvendor" value="0x1028" />
+    <hint name="pci.vendor" value="0x102B" />
+   </hints>
+  </node>
+  <node id="display" claimed="true" class="display" handle="PCI:0000:65:00.0" modalias="pci:v000010DEd00001EB0sv00001028sd0000129Fbc03sc00i00">
+   <description>VGA compatible controller</description>
+   <product>TU104GL [Quadro RTX 5000]</product>
+   <vendor>NVIDIA Corporation</vendor>
+   <physid>0</physid>
+   <subproduct>Dell</subproduct>
+   <subvendor>Dell</subvendor>
+   <businfo>pci@0000:65:00.0</businfo>
+   <logicalname>/dev/fb0</logicalname>
+   <dev>29:0</dev>
+   <version>a1</version>
+   <width units="bits">64</width>
+   <clock units="Hz">33000000</clock>
+   <configuration>
+    <setting id="depth" value="32" />
+    <setting id="driver" value="vfio-pci" />
+    <setting id="latency" value="0" />
+    <setting id="mode" value="1024x768" />
+    <setting id="visual" value="truecolor" />
+    <setting id="xres" value="1024" />
+    <setting id="yres" value="768" />
+   </configuration>
+   <capabilities>
+    <capability id="pm" >Power Management</capability>
+    <capability id="msi" >Message Signalled Interrupts</capability>
+    <capability id="pciexpress" >PCI Express</capability>
+    <capability id="vga_controller" />
+    <capability id="cap_list" >PCI capabilities listing</capability>
+    <capability id="rom" >extension ROM</capability>
+    <capability id="fb" />
+   </capabilities>
+   <resources>
+    <resource type="iomemory" value="38bf0-38bef" />
+    <resource type="iomemory" value="38bf0-38bef" />
+    <resource type="irq" value="255" />
+    <resource type="memory" value="94000000-94ffffff" />
+    <resource type="memory" value="38bfe0000000-38bfefffffff" />
+    <resource type="memory" value="38bff0000000-38bff1ffffff" />
+    <resource type="ioport" value="8000(size=128)" />
+    <resource type="memory" value="95080000-950fffff" />
+   </resources>
+   <hints>
+    <hint name="icon" value="display" />
+    <hint name="pci.class" value="0x300" />
+    <hint name="pci.device" value="0x1EB0" />
+    <hint name="pci.subdevice" value="0x129F" />
+    <hint name="pci.subvendor" value="0x1028" />
+    <hint name="pci.vendor" value="0x10DE" />
+   </hints>
+  </node>
+</list>
