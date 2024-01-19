@@ -10,10 +10,17 @@ async function getGpuInfo() {
             var result = [];
             for (var i = 0; i < lspciData.length; i++) {
                 const deviceObject = lspciData[i];
-                if (
-                    deviceObject.vendor_id === NVIDIA_VENDOR_ID &&
-                    deviceObject.class.includes("VGA")
-                ) {
+
+                if (!deviceObject.vendor_id || !deviceObject.class || !deviceObject.device || !deviceObject.slot || !deviceObject.bus || !deviceObject.vendor || !deviceObject.device_id) {
+                    continue;
+                }
+
+                const isNvidiaGpu = deviceObject.vendor_id === NVIDIA_VENDOR_ID;
+                const isVgaClass = deviceObject.class.includes("VGA");
+                const is3dControllerClass = deviceObject.class.includes("3D controller");
+
+                if (isNvidiaGpu && (isVgaClass || is3dControllerClass)) {
+
                     let gpuName = deviceObject.device;
                     if (gpuName.includes("[")) {
                         var start = gpuName.indexOf("[");
@@ -30,6 +37,7 @@ async function getGpuInfo() {
                         deviceId: deviceObject.device_id,
                     });
                 }
+
             }
 
             return result;

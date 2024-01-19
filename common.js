@@ -11,6 +11,11 @@ if (useMock) {
 const execProm = util.promisify(child.exec);
 
 async function getSensorData() {
+    if (useMock) {
+        return JSON.parse(localSensorsData);
+    }
+
+
     return execProm("sensors -j")
         .then(({ stdout }) => stdout)
 
@@ -30,6 +35,10 @@ async function getSensorData() {
 }
 
 async function getLspciData() {
+    if (useMock) {
+        return JSON.parse(localLspciData);
+    }
+
     return execProm("lspci -mmv -nnv | jc --lspci")
         .then(({ stdout }) => stdout)
 
@@ -51,6 +60,10 @@ async function getLspciData() {
 
 
 async function getLshwData() {
+    if (useMock) {
+        return new XMLParser().parse(localLshwData);
+    }
+
     return execProm("lshw -class display -xml")
         .then(({ stdout }) => stdout)
 
