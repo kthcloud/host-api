@@ -11,9 +11,20 @@ async function getGpuCount() {
             let count = 0;
             for (let i = 0; i < lspciData.length; i++) {
                 const deviceObject = lspciData[i];
+
+                if (!deviceObject.vendor_id || !deviceObject.class) {
+                    continue;
+                }
+
+
+                const isNvidiaGpu = deviceObject.vendor_id === NVIDIA_VENDOR_ID;
+                const isVgaClass = deviceObject.class.includes("VGA");
+                const is3dControllerClass = deviceObject.class.includes("3D controller");
+
+
                 if (
-                    deviceObject.vendor_id === NVIDIA_VENDOR_ID &&
-                    deviceObject.class.includes("VGA")
+                    isNvidiaGpu &&
+                    (isVgaClass || is3dControllerClass)
                 ) {
                     count++;
                 }
