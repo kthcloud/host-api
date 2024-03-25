@@ -1,6 +1,7 @@
 import express from "express";
 
 import { getLspciData, NVIDIA_VENDOR_ID } from "../common.js";
+import global from "../config/config.js";
 
 const routes = express.Router();
 
@@ -50,6 +51,14 @@ async function getGpuInfo() {
 
 routes.get("/gpuInfo", async (_req, res) => {
     let gpuInfo = await getGpuInfo();
+
+    // Append zone information to the response
+    gpuInfo = gpuInfo.map((gpu) => {
+        return {
+            ...gpu,
+            zone: global.zone,
+        };
+    });
 
     res.status(200).json(gpuInfo);
 });

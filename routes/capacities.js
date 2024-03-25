@@ -2,6 +2,7 @@ import express from "express";
 import * as si from "systeminformation";
 
 import { getLspciData, NVIDIA_VENDOR_ID, convertToGb } from "../common.js";
+import global from "../config/config.js";
 
 const routes = express.Router();
 
@@ -58,6 +59,12 @@ routes.get("/capacities", async (_req, res) => {
     // Await all requests
     capacities.gpu.count = await capacities.gpu.count;
     capacities.ram = await capacities.ram;
+
+    // Append zone information to the response
+    capacities = {
+        ...capacities,
+        zone: global.zone,
+    };
 
     res.status(200).json(capacities);
 });
