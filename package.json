@@ -1,22 +1,24 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "main": "app.js",
+  "name": "host-api",
+  "module": "index.ts",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "start-dev": "set USE_MOCK=true& nodemon app.js",
-    "dev": "nodemon app.js"
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   },
   "dependencies": {
-    "body-parser": "^1.20.1",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "fast-xml-parser": "^4.2.2",
+    "@types/js-yaml": "^4.0.9",
+    "cross-env": "^7.0.3",
+    "dev": "^0.1.3",
+    "fast-xml-parser": "^4.3.6",
     "js-yaml": "^4.1.0",
-    "nodemon": "^2.0.20",
-    "systeminformation": "^5.12.7",
-    "xml2js": "^0.4.23"
+    "systeminformation": "^5.22.6",
+    "tslog": "^4.9.2"
+  },
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "cross-env USE_MOCK=true bun run index.ts"
   }
 }

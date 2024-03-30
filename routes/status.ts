@@ -1,9 +1,5 @@
-import express from "express";
 import * as si from "systeminformation";
-import { getSensorData } from "../common.js";
-import global from "../config/config.js";
-
-const routes = express.Router();
+import { getSensorData, type AdapterData, type SensorData } from "../hw/read_hw";
 
 async function getCpuTemp() {
   return si.cpuTemperature().then((rawResult) => {
@@ -27,7 +23,7 @@ async function getCpuLoad() {
 async function getRamLoad() {
   return si.mem().then((rawResult) => {
     const load = Math.round(
-      (parseFloat(rawResult.active) / parseFloat(rawResult.total)) * 100.0
+      (rawResult.active / rawResult.total) * 100.0
     );
     return {
       main: load,
@@ -51,12 +47,12 @@ async function getNetworkUsage() {
   });
 }
 
-function getGpuSensorValue(sensorValues) {
+function getGpuSensorValue(sensorValues: SensorData | string) : number{
   for (let [sensorName, sensorValue] of Object.entries(sensorValues)) {
     for (let split of sensorName.split("_")) {
       if (split === "input") {
         try {
-          return parseInt(sensorValue)
+          return sensorValue
         } catch (error) {
           return 0;
         }
@@ -66,7 +62,7 @@ function getGpuSensorValue(sensorValues) {
   return 0;
 }
 
-function getGpuSensorField(gpuSensor) {
+function getGpuSensorField(gpuSensor: AdapterData) : number {
   for (let [sensorLocation, sensorValues] of Object.entries(gpuSensor)) {
     if (
       sensorLocation.includes("loc") ||
@@ -79,11 +75,15 @@ function getGpuSensorField(gpuSensor) {
   return 0;
 }
 
-async function getGpuTemp() {
+type GpuTemp = {
+  main: number,
+};
+
+async function getGpuTemp() : Promise<GpuTemp[]> {
   return getSensorData()
-    .then((sensorsData) => {
+    .then(sensorsData => {
       const gpuSensors = Object.values(sensorsData).filter(
-        (sensor) => sensor.Adapter === "PCI adapter"
+        sensor => sensor.Adapter === "PCI adapter"
       );
 
       return gpuSensors.map((gpuSensor) => {
@@ -94,42 +94,37 @@ async function getGpuTemp() {
     })
     .catch((error) => {
       console.error(`Could not execute sensors command: ${error}`);
-      return 0;
-    });
+      return [];
+    })
 }
 
-routes.get("/status", async (req, res) => {
+export async function status(req: Request): Promise<Response> {
   // Make all system request
   let status = {
     cpu: {
-      temp: getCpuTemp(),
-      load: getCpuLoad(),
+      temp: await getCpuTemp(),
+      load: await getCpuLoad(),
     },
     ram: {
-      load: getRamLoad(),
+      load: await getRamLoad(),
     },
     network: {
-      usage: getNetworkUsage(),
+      usage: await getNetworkUsage(),
+    },
+    gpu: {
+      temp: 0,
     },
   };
 
   let gpuTemp = await getGpuTemp();
+  if (gpuTemp.length > 0) {
+    // We only support average GPU temperature for now
+    status.gpu.temp = gpuTemp.reduce((acc, gpu) => acc + gpu.main, 0) / gpuTemp.length;
+  }
 
-  // Await all requests
-  gpuTemp = await gpuTemp;
-  status.cpu.temp = await status.cpu.temp;
-  status.cpu.load = await status.cpu.load;
-  status.ram.load = await status.ram.load;
-  status.network.usage = await status.network.usage;
-
-  // Zero means either that the GPU doesn't exist, or the parsing failed
-  if (gpuTemp != 0) {
-    status.gpu = {
-      temp: gpuTemp,
-    };
-  }  
-
-  res.status(200).json(status);
-});
-
-export default routes;
+  return new Response(JSON.stringify(status), {
+    headers: {
+      "content-type": "application/json",
+    },
+  });
+}
