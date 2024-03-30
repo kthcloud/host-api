@@ -60,12 +60,6 @@ routes.get("/capacities", async (_req, res) => {
     capacities.gpu.count = await capacities.gpu.count;
     capacities.ram = await capacities.ram;
 
-    // Append zone information to the response
-    capacities = {
-        ...capacities,
-        zone: global.zone,
-    };
-
     res.status(200).json(capacities);
 });
 

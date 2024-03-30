@@ -52,14 +52,6 @@ async function getGpuInfo() {
 routes.get("/gpuInfo", async (_req, res) => {
     let gpuInfo = await getGpuInfo();
 
-    // Append zone information to the response
-    gpuInfo = gpuInfo.map((gpu) => {
-        return {
-            ...gpu,
-            zone: global.zone,
-        };
-    });
-
     res.status(200).json(gpuInfo);
 });
 

@@ -127,14 +127,7 @@ routes.get("/status", async (req, res) => {
     status.gpu = {
       temp: gpuTemp,
     };
-  }
-
-  // Append zone information to the response
-  status = {
-    ...status,
-    zone: global.zone,
-  };
-  
+  }  
 
   res.status(200).json(status);
 });
