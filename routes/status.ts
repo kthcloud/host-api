@@ -1,11 +1,51 @@
 import * as si from "systeminformation";
 import { getSensorData, type AdapterData, type SensorData } from "../hw/read_hw";
 
+type GpuTemp = {
+  main: number,
+};
+
+type GpuStatus = {
+  temp: GpuTemp[],
+};
+
+type CpuStatus = {
+  temp: {
+    main: number,
+    cores: number[],
+    max: number,
+  },
+  load: {
+    main: number,
+    cores: number[],
+  },
+};
+
+type RamStatus = {
+  load: {
+    main: number,
+  }
+};
+
+type NetworkStatus = {
+  usage: {
+    rxSec: number,
+    txSec: number,
+  },
+};
+
+type Status = {
+  cpu: CpuStatus,
+  ram: RamStatus,
+  network: NetworkStatus,
+  gpu: GpuStatus | undefined,
+};
+
 async function getCpuTemp() {
   return si.cpuTemperature().then((rawResult) => {
     return {
       main: rawResult.main ? rawResult.main : 0,
-      cores: rawResult.cores ? rawResult.cores : 0,
+      cores: rawResult.cores ? rawResult.cores : [],
       max: rawResult.max ? rawResult.max : 0,
     };
   });
@@ -47,7 +87,7 @@ async function getNetworkUsage() {
   });
 }
 
-function getGpuSensorValue(sensorValues: SensorData | string) : number{
+function getGpuSensorValue(sensorValues: SensorData | string): number {
   for (let [sensorName, sensorValue] of Object.entries(sensorValues)) {
     for (let split of sensorName.split("_")) {
       if (split === "input") {
@@ -62,7 +102,7 @@ function getGpuSensorValue(sensorValues: SensorData | string) : number{
   return 0;
 }
 
-function getGpuSensorField(gpuSensor: AdapterData) : number {
+function getGpuSensorField(gpuSensor: AdapterData): number {
   for (let [sensorLocation, sensorValues] of Object.entries(gpuSensor)) {
     if (
       sensorLocation.includes("loc") ||
@@ -75,11 +115,8 @@ function getGpuSensorField(gpuSensor: AdapterData) : number {
   return 0;
 }
 
-type GpuTemp = {
-  main: number,
-};
 
-async function getGpuTemp() : Promise<GpuTemp[]> {
+async function getGpuTemp(): Promise<GpuTemp[]> {
   return getSensorData()
     .then(sensorsData => {
       const gpuSensors = Object.values(sensorsData).filter(
@@ -98,9 +135,10 @@ async function getGpuTemp() : Promise<GpuTemp[]> {
     })
 }
 
+
 export async function status(req: Request): Promise<Response> {
   // Make all system request
-  let status = {
+  let status: Status = {
     cpu: {
       temp: await getCpuTemp(),
       load: await getCpuLoad(),
@@ -111,15 +149,14 @@ export async function status(req: Request): Promise<Response> {
     network: {
       usage: await getNetworkUsage(),
     },
-    gpu: {
-      temp: 0,
-    },
+    gpu: undefined,
   };
 
   let gpuTemp = await getGpuTemp();
   if (gpuTemp.length > 0) {
-    // We only support average GPU temperature for now
-    status.gpu.temp = gpuTemp.reduce((acc, gpu) => acc + gpu.main, 0) / gpuTemp.length;
+    status.gpu = {
+      temp: gpuTemp,
+    };
   }
 
   return new Response(JSON.stringify(status), {

@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "bun run index.ts",
-    "dev": "cross-env USE_MOCK=true bun run index.ts"
+    "dev": "cross-env USE_MOCK=true bun run index.ts",
+    "agent": "bun run agent/index.ts"
   }
 }
