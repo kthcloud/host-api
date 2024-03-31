@@ -44,11 +44,11 @@ Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
-" > /etc/systemd/system//host-api.service
+" > /etc/systemd/system/host-api.service
 
 systemctl daemon-reload
 systemctl enable host-api.service
-systemctl start host-api.service
+systemctl restart host-api.service
 
 # Install agent that reports the status as active, run $pwd/agent/index.ts every 5 seconds
 export EDITOR="nano"
