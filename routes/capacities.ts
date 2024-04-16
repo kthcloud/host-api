@@ -1,10 +1,7 @@
-import express from "express";
 import * as si from "systeminformation";
 
-import { getLspciData, NVIDIA_VENDOR_ID, convertToGb } from "../common.js";
-import global from "../config/config.js";
+import { getLspciData, NVIDIA_VENDOR_ID, convertToGb } from "../hw/read_hw";
 
-const routes = express.Router();
 
 async function getGpuCount() {
     return getLspciData()
@@ -47,26 +44,29 @@ async function getRam() {
     });
 }
 
-routes.get("/capacities", async (_req, res) => {
+async function getCpu() {
+    return si.cpu().then((rawResult) => {
+        return {
+            cores: rawResult.cores,
+            vendor: rawResult.vendor,
+        };
+    });
+}
+
+export async function capacities(req: Request): Promise<Response> {
     // Make all capacity request
     let capacities = {
         gpu: {
-            count: getGpuCount(),
+            count: await getGpuCount(),
         },
-        ram: getRam(),
+        ram: await getRam(),
+        cpu: await getCpu(),
     };
 
-    // Await all requests
-    capacities.gpu.count = await capacities.gpu.count;
-    capacities.ram = await capacities.ram;
+    return new Response(JSON.stringify(capacities), {
+        headers: {
+            "content-type": "application/json",
+        },
+    });
+}
 
-    // Append zone information to the response
-    capacities = {
-        ...capacities,
-        zone: global.zone,
-    };
-
-    res.status(200).json(capacities);
-});
-
-export default routes;

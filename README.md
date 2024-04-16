@@ -11,3 +11,21 @@ Exposes the host's GPU information, including slot, bus, vendor, vendor ID, and 
 
 ### GET /status
 Exposes the host's status, such as the temperature and usage of CPU, RAM and network.
+
+### GET /nodeInfo
+Exposes the host's node information, such as the zone.
+
+## Usage
+
+### 🚀 Run the API
+Install the dependencies and start the API.
+```bash
+$ bun install
+```
+
+Start the API, either in production or development mode.\
+Development mode will use mock data.
+```bash
+$ bun start
+$ bun run dev
+```

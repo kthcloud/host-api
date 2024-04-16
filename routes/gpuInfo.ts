@@ -1,14 +1,18 @@
-import express from "express";
+import { getLspciData, NVIDIA_VENDOR_ID } from "../hw/read_hw";
 
-import { getLspciData, NVIDIA_VENDOR_ID } from "../common.js";
-import global from "../config/config.js";
-
-const routes = express.Router();
+type GPUInfo = {
+    name: string;
+    slot: string;
+    bus: string;
+    vendor: string;
+    vendorId: string;
+    deviceId: string;
+};
 
 async function getGpuInfo() {
     return getLspciData()
         .then((lspciData) => {
-            var result = [];
+            var result : GPUInfo[] = [];
             for (var i = 0; i < lspciData.length; i++) {
                 const deviceObject = lspciData[i];
 
@@ -49,18 +53,12 @@ async function getGpuInfo() {
         });
 }
 
-routes.get("/gpuInfo", async (_req, res) => {
+export async function gpuInfo(req: Request): Promise<Response> {
     let gpuInfo = await getGpuInfo();
 
-    // Append zone information to the response
-    gpuInfo = gpuInfo.map((gpu) => {
-        return {
-            ...gpu,
-            zone: global.zone,
-        };
+    return new Response(JSON.stringify(gpuInfo), {
+        headers: {
+            "content-type": "application/json",
+        },
     });
-
-    res.status(200).json(gpuInfo);
-});
-
-export default routes;
+}
