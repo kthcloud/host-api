@@ -7,6 +7,7 @@ type GPUInfo = {
     vendor: string;
     vendorId: string;
     deviceId: string;
+    passthrough: boolean;
 };
 
 async function getGpuInfo() {
@@ -33,6 +34,11 @@ async function getGpuInfo() {
                         gpuName = gpuName.substring(start + 1, end);
                     }
 
+                    let passthrough = false;
+                    if (deviceObject.driver && deviceObject.driver === "vfio-pci") {
+                        passthrough = true;
+                    }
+
                     result.push({
                         name: gpuName,
                         slot: deviceObject.slot,
@@ -40,6 +46,7 @@ async function getGpuInfo() {
                         vendor: deviceObject.vendor,
                         vendorId: deviceObject.vendor_id,
                         deviceId: deviceObject.device_id,
+                        passthrough: passthrough,
                     });
                 }
 

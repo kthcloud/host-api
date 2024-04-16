@@ -55,7 +55,7 @@ async function getLspciData(): Promise<any> {
         return JSON.parse(localLspciData);
     }
 
-    return execProm("lspci -mmv -nnv | jc --lspci")
+    return execProm("lspci -knnmmvvv | jc --lspci")
         .then(({ stdout }) => stdout)
         .catch((err) => {
             if (useMock) {
